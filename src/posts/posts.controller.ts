@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -20,18 +21,20 @@ import { PostExistsPipe } from './pipes/post-exists.pipe';
 import { PostsService } from './posts.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { FindPostsQueryDto } from './dto/find-posts-query.dto';
+import { Paginatedresponse } from 'src/common/interfaces/paginated-response.interface';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  findAll(): Promise<PostEntity[]> {
-    return this.postsService.findAll();
+  findAll(@Query() query: FindPostsQueryDto): Promise<Paginatedresponse<PostEntity>> {
+    return this.postsService.findAll(query);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe, PostExistsPipe) id: number): Promise<PostEntity> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<PostEntity> {
     return this.postsService.findOne(id);
   }
 

@@ -9,6 +9,7 @@ import { PostsModule } from './posts/posts.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -35,6 +36,11 @@ import { APP_GUARD } from '@nestjs/core';
         limit: 10,
       },
     ]),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 30000,
+      max: 100,
+    }),
   ],
   controllers: [AppController],
   providers: [
