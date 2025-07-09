@@ -1,15 +1,17 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/entities/user.entity';
+import { File } from './file-upload/entities/file.entity';
+import { FileUploadModule } from './file-upload/file-upload.module';
 import { Post } from './posts/entities/post.entity';
 import { PostsModule } from './posts/posts.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
-import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { CacheModule } from '@nestjs/cache-manager';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [Post, User], // array of entities that you want to register
+        entities: [Post, User, File], // array of entities that you want to register
         synchronize: true,
       }),
     }),
@@ -41,6 +43,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       ttl: 30000,
       max: 100,
     }),
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [
