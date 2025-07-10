@@ -12,6 +12,7 @@ import { File } from './file-upload/entities/file.entity';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { Post } from './posts/entities/post.entity';
 import { PostsModule } from './posts/posts.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { PostsModule } from './posts/posts.module';
       max: 100,
     }),
     FileUploadModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [

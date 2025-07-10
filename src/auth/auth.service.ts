@@ -8,6 +8,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { User, UserRole } from './entities/user.entity';
 import { Response } from 'express';
+import { UserEventsService } from 'src/events/user-events.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly userEventService: UserEventsService,
   ) {}
 
   register(registerDto: RegisterDto) {
@@ -128,6 +130,9 @@ export class AuthService {
     });
 
     const savedUser = await this.userRepository.save(newUser);
+
+    // Emit the user registered event
+    this.userEventService.emitUserRegistered(newUser);
 
     const { password, hashedRefreshToken, ...result } = savedUser;
     return { user: result, message: successMsg };
